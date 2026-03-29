@@ -251,57 +251,198 @@ body {
   margin-bottom: 12px;
 }
 
-.question-math {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  direction: ltr; /* Math is always LTR */
-  font-size: 3rem;
-  font-weight: 800;
-  color: var(--color-text);
+/* ---------- VERTICAL PROBLEM ---------- */
+.vertical-problem {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  direction: ltr;
   background: var(--color-card);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 24px 32px;
   box-shadow: var(--shadow);
+  font-family: 'Courier New', 'Consolas', monospace;
+  /* Use a fixed digit width so columns always align */
+  --digit-w: 56px;
+  --digit-h: 64px;
 }
 
-.question-operator {
+/* Each row is a flex row of fixed-width cells */
+.vp-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.vp-cell {
+  width: var(--digit-w);
+  height: var(--digit-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.vp-cell-hundreds {
+  width: var(--digit-w);
+}
+
+/* Main digit styling */
+.vp-digit {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+/* Operator sits to the left of the tens digit in the bottom row */
+.vp-operator-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vp-operator {
+  font-size: 2rem;
+  font-weight: 800;
   color: var(--color-primary);
+  margin-right: 2px;
 }
 
-.question-equals {
-  color: var(--color-text-light);
+/* Horizontal answer line */
+.vp-line {
+  height: 4px;
+  background: var(--color-text);
+  border-radius: 2px;
+  margin: 4px 0;
 }
 
-.question-placeholder {
-  color: var(--color-warning);
-  font-size: 3.2rem;
+/* ---- Carry annotation (addition) ---- */
+.vp-carry-row {
+  height: 36px;
+}
+
+.vp-carry-cell {
+  height: 36px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.vp-carry-cell:hover {
+  background: #f0f4ff;
+}
+
+.vp-carry-active {
+  background: #ede9fe;
+}
+
+.vp-carry-digit {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+/* ---- Borrow annotations (subtraction) ---- */
+.vp-top-tens {
+  cursor: pointer;
+}
+
+.vp-top-tens:hover {
+  background: #f0f4ff;
+  border-radius: 8px;
+}
+
+/* Crossed-out original digit */
+.vp-crossed {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-error);
+  text-decoration-thickness: 3px;
+  opacity: 0.5;
+}
+
+/* New reduced tens digit above the crossed-out one */
+.vp-borrow-new {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+/* Small "1" next to ones digit showing the borrowed 10 */
+.vp-borrow-ten {
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+/* ---- Answer slots ---- */
+.vp-answer-row {
+  margin-top: 4px;
+}
+
+.vp-answer-slot {
+  width: calc(var(--digit-w) - 8px);
+  height: var(--digit-h);
+  border: 3px dashed var(--color-border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  background: #fafbff;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.vp-answer-slot:hover {
+  border-color: var(--color-primary);
+  background: #f0f4ff;
+}
+
+.vp-slot-active {
+  border-color: var(--color-primary);
+  border-style: solid;
+  background: #eef2ff;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+  animation: slotPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes slotPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(74, 108, 247, 0.12); }
+}
+
+.vp-slot-filled {
+  border-style: solid;
+  border-color: var(--color-text-light);
+  background: #fff;
+}
+
+.vp-slot-fixed {
+  border-style: solid;
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+  color: var(--color-text);
 }
 
 /* ---------- NUMERIC KEYPAD ---------- */
 .keypad-container {
   width: 100%;
-}
-
-.answer-display {
-  text-align: center;
-  background: var(--color-card);
-  border: 3px solid var(--color-primary);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 16px;
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.answer-value {
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: var(--color-text);
-  direction: ltr;
 }
 
 .keypad-grid {
@@ -573,10 +714,22 @@ body {
 @media (max-width: 480px) {
   html { font-size: 16px; }
 
-  .question-math {
-    font-size: 2.4rem;
-    gap: 10px;
-    padding: 18px;
+  .vertical-problem {
+    --digit-w: 46px;
+    --digit-h: 54px;
+    padding: 18px 22px;
+  }
+
+  .vp-digit {
+    font-size: 2.2rem;
+  }
+
+  .vp-answer-slot {
+    font-size: 2.2rem;
+  }
+
+  .vp-operator {
+    font-size: 1.6rem;
   }
 
   .keypad-btn {
@@ -593,6 +746,12 @@ body {
   .page {
     max-width: 600px;
     padding: 32px 24px 48px;
+  }
+
+  .vertical-problem {
+    --digit-w: 64px;
+    --digit-h: 72px;
+    padding: 28px 40px;
   }
 
   .keypad-btn {
